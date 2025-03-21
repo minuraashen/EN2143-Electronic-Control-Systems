@@ -5,7 +5,7 @@ k_B = 0.02;  % Vs/rad
 L = 0.062; %inductance of armature
 R = 2.5; %resistance of armature
 n = 20; %gear ratio of reduction gear system
-dur = 0.2; %time duration
+dur = 5; %time duration
 
 J_eq = 0.00004; %equivalent inertia
 b_eq = 0.001; %equivalent viscous damping constant
@@ -26,21 +26,37 @@ Pos_sys = tf(a0,[b2 b1 b0 0]);
 %method02
 s = tf('s');
 G = a0/(b2*s^3+b1*s^2+b0*s+0);
+H = a0/(b2*s^2+b1*s+b0);
 
+%position response of the system
 %unit step response is given by
+% subplot(211);
+% step(Pos_sys,dur); grid on; title("Position Response");
+
+%Position response for a custom input can be given by
+t = 0:0.001:dur;   %time vector
+u = ones(size(t)); %custom input
+u(1/0.001:3/0.001) = 2;
+response = lsim(G, u, t); 
 subplot(211);
-step(Pos_sys,dur); grid on;
+plot(t,u,t,response); grid on;
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Position response to Unit Step');
 
-%system output for a custom input can be given by
-% t = 0:0.001:dur;   %time vector
-% u = ones(size(t)); %unit step as input
-% response = lsim(G, u, t); 
-% plot(t,response); grid on;
-% xlabel('Time (s)');
-% ylabel('Amplitude');
-% title('System Response to Unit Step');
+%velocity respose of the system
+%unit step response is given by
+% Vel_sys = tf(a0,[b2 b1 b0]);
+% subplot(212);
+% step(Vel_sys,dur); grid on; title("Velocity Response"); ylabel("Velocity")
 
-%velocity respose
-Vel_sys = tf(a0,[b2 b1 b0]);
+%Velocity resposnse output for a custom input can be given by
+t = 0:0.001:dur;   %time vector
+u = ones(size(t)); %custom input
+u(1/0.001:3/0.001) = 2;
+response = lsim(H, u, t);
 subplot(212);
-step(Vel_sys,dur); grid on;
+plot(t,u,t,response); grid on;
+xlabel('Time (s)');
+ylabel('Velocity');
+title('Velocity Response to Unit Step');
