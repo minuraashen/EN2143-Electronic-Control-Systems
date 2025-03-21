@@ -21,14 +21,15 @@ b2 = L*J_eq;
 %transfer function can be decalred in two ways
 
 %method 01
-sys = tf(a0,[b2 b1 b0 0]);
+Pos_sys = tf(a0,[b2 b1 b0 0]);
 
 %method02
 s = tf('s');
 G = a0/(b2*s^3+b1*s^2+b0*s+0);
 
-%unit step output is given by
-step(sys,dur); grid on;
+%unit step response is given by
+subplot(211);
+step(Pos_sys,dur); grid on;
 
 %system output for a custom input can be given by
 % t = 0:0.001:dur;   %time vector
@@ -38,3 +39,8 @@ step(sys,dur); grid on;
 % xlabel('Time (s)');
 % ylabel('Amplitude');
 % title('System Response to Unit Step');
+
+%velocity respose
+Vel_sys = tf(a0,[b2 b1 b0]);
+subplot(212);
+step(Vel_sys,dur); grid on;
